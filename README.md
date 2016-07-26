@@ -1,9 +1,13 @@
-# Ceph-Seed
+# CephSeed-RBD
 
 ![](ceph-seed.jpg)
 
 
-Ceph-Seed 包含以下两点功能：
+CephSeed-RBD是基于ceph-seed的而写的ceph部署项目，本项目的目的是：
+1. 适配centos 7环境
+2. 适配rbd对于共享journal的需求
+
+包含以下两点功能：
 
 1. 快速部署Ceph集群
 2. 快速扩展OSD
@@ -26,14 +30,13 @@ priority=1
 - 之后执行：
 ```
 yum install fabric ceph-deploy -y
-git pull git@git.letv.cn:cuixiaotian/ceph-seed.git
-git checkout centos7-jewel
+git pull http://git.letv.cn/wuxingyi/cephseed-rbd.git
 ```
 
 ## 利用 Ceph-Seed 快速部署Ceph集群
 1. 配置到所有节点ssh登陆权限(即SSH白名单),如果没有配置到节点的服务器，那么需要在部署过程中手工输入节点的密码(如果服务器密码一致，只需输入一次).
 2. 参考conf/nodeProfile.conf.example的格式，创建conf/nodeProfile.conf, 并填充area，mroom, storage，这三者是形成节点hostname的依据。 `注意：等于号之间不要有空格，文件尾部不要有空行`
-3. 参考conf/monhosts.example  conf/osdhosts.example的格式，创建conf/monhosts和conf/osdhosts, 填充需要部署的monitor hosts和osd hosts。 `注意：一行一个IP，文件尾部不要有空行`
+3. 参考conf/monhosts.example、conf/osdhosts.example的格式，创建conf/monhosts和conf/osdhosts, 填充需要部署的monitor hosts和osd hosts。 `注意：一行一个IP，文件尾部不要有空行`
 4. 执行：
 ```
 sh deploy.sh [-D|--diskprofile] [raid0|noraid] [-N|--no-purge]
