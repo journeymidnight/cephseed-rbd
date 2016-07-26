@@ -38,6 +38,8 @@ git checkout centos7-jewel
 ```
 sh deploy.sh [-D|--diskprofile] [raid0|noraid] [-N|--no-purge]
 ```
+绝大部分场景下，使用sh deploy.sh -D raid0这个命令行进行部署即可。
+
 5. 福利: 部署完成之后，会生成一个fabfile.py，这个文件已经配置了集群的一些环境，可以方便的增加其他函数来对集群进行运维操作。
 
 ### 参数说明
@@ -53,6 +55,8 @@ sh deploy.sh [-D|--diskprofile] [raid0|noraid] [-N|--no-purge]
 ```
 sh expend-osd.sh [-c|--confserver] CONFSERVER [-s|--osdserver] OSDSERVER [-D|--diskprofile] [raid0|noraid] [-N|--no-purge] [-H|--hostname MONHOSTNAME]
 ```
+绝大部分场景下，使用形如sh extend-osd.sh  -c 1.1.1.1 -s 1.1.1.2 -D raid0进行扩展即可。
+
 4. 扩充节点后，为了便于后续管理新增加的节点，可以将此节点也添加到fabfile.py中。
 5. 通常情况下, 新扩展的节点上的osd是不会新增到对应的host上的,因为在新扩展节点上防不胜防的被配置了“osd crush update on start = false”，为了让osd加入到这个host上，只需在ceph.conf
 中删除此项配置，然后重启osd即可。在osd起来了之后，在把“osd crush update on start = false”这项配置重新添加上。
