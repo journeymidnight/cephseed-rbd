@@ -6,18 +6,6 @@ function loginfo()
         echo -e ${now}${msg} >> deployCeph.log
 }
 
-function getConf()
-{
-	echo `cat ./conf/nodeProfile.conf|grep $1|awk -F'=' '{printf $2}'`
-}
-
-function toHostname()
-{
-	serverIP=$1
-	ipCD=`echo $serverIP |awk -F "." '{print $3"-"$4}'`
-	echo $area-$mroom-$storage-$ipCD
-}
-
 loginfo "######################### Begin to DeployCeph Now! #########################" 
 TEMP=`getopt -o NWD: --long no-purge,diskprofile: -- "$@"`
 echo $TEMP
@@ -57,20 +45,7 @@ then
 fi
 
 rm -rf ceph.*
-
-area=`getConf area`
-mroom=`getConf mroom`
-storage=`getConf storage`
-
-loginfo "All arguments:\narea="$area"\nmroom="$mroom"\nstorage="$storage"\nnopurge="$nopurge"\ndiskprofile="$diskprofile"\n"
-
 cp ./deployFile/.cephdeploy.conf /root/.cephdeploy.conf
-
-## Add hostname to /etc/hosts
-while read  serverIP
-do
-	echo $serverIP" "`toHostname $serverIP` >> /etc/hosts
-done < ./conf/osdhosts
 
 ## Create fabric.py 
 cp fabfile.org.py fabfile.py.bak
@@ -78,24 +53,19 @@ sed -i "s/#diskprofile#/#diskprofile#\ndiskprofile = \"$diskprofile\"/g" ./fabfi
 
 rm monhostnames osdhostnames -rf
 
-while read serverIP
+while read moninfo
 do
-        echo `toHostname $serverIP` >> monhostnames
+        echo `echo $moninfo | awk '{print $2}'`>> monhostnames
 done < ./conf/monhosts
 
-while read serverIP
+while read osdinfo
 do
-        echo `toHostname $serverIP` >> osdhostnames
+        echo `echo $osdinfo | awk '{print $2}'` >> osdhostnames
 done < ./conf/osdhosts
 
 osdnames=`cat ./osdhostnames`
 osdnamesArray=`echo $osdnames|sed "s/ /\",\"/g"|sed "s/^/env.hosts = \[\"/g"|sed "s/$/\"\]/g"`
 sed -i "s/#osdhostnames#/#osdhostnames#\n$osdnamesArray/g" ./fabfile.py.bak
-
-## Fill node profile ##
-tf=`mktemp`
-sed "s/\(.*\)=\(.*\)/\1 = \"\2\"/" ./conf/nodeProfile.conf > $tf
-sed -i "/#nodeProfile#/ r $tf" fabfile.py.bak
 
 
 cp fabfile.py.bak fabfile.py
@@ -114,8 +84,8 @@ fi
 ## Test Connection
 fab testecho 
 
-## Change HostName
-fab changeHostAndRepo -P
+## update repos
+fab updateRepoAddress -P
 osdnamelist=`cat osdhostnames`
 monsnamelist=`cat monhostnames`
 

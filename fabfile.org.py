@@ -5,8 +5,6 @@ import os
 
 #diskprofile#
 
-#nodeProfile#
-
 #monhostnames#
 
 #osdhostnames#
@@ -22,11 +20,6 @@ def read_key_file(key_file):
         raise RuntimeWarning('Trying to push non-public part of key pair')
     with open(key_file) as f:
         return f.read()
-
-def changeHostname(area,mroom,storage):
-    put('./deployFile/hostnamectl.sh','/tmp/hostnamectl.sh')
-    run('chmod +x /tmp/hostnamectl.sh')
-    run('/tmp/hostnamectl.sh %s %s %s' % (area, mroom, storage))
 
 def updateRepoAddress():
     put('./deployFile/resolv.conf','/etc/resolv.conf')
