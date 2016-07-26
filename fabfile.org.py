@@ -39,11 +39,6 @@ def testecho():
     run('rpm -qa|grep redhat-lsb-core || yum install redhat-lsb-core -y')
     run('echo hello')
 
-def changeHostAndRepo():
-    ##Change Hostname
-    changeHostname(area,mroom,storage)
-    updateRepoAddress()
-
 def PurgeCeph():
     local('ceph-deploy purge %s' % env.host)
     local('ceph-deploy purgedata %s' % env.host)
@@ -53,7 +48,7 @@ def InstallCeph():
     run('yum install -y ceph ceph-osd')
 
 def DeployOSDs():
-    # in rbd case, sdb、sdc、sdd share /dev/sdg as journal disk, sde、sdf share /dev/sdh as journal disk
+    # in rbd case, sdb/sdc/sdd share /dev/sdg as journal disk, sde/sdf share /dev/sdh as journal disk
     run('/usr/sbin/ceph-disk zap /dev/sdg /dev/sdh') 
     local('ceph-deploy osd create --zap-disk %s:/dev/sdb:/dev/sdg %s:/dev/sdc:/dev/sdg %s:/dev/sdd:/dev/sdg %s:/dev/sde:/dev/sdh %s:/dev/sdf:/dev/sdh' % (env.host,env.host,env.host,env.host,env.host))
 def prepareDisks():
