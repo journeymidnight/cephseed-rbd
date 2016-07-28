@@ -42,12 +42,12 @@ def InstallCeph():
 
 def DeployOSDs():
     # in rbd case, sdb/sdc/sdd share /dev/sdg as journal disk, sde/sdf share /dev/sdh as journal disk
-    #run('/usr/sbin/ceph-disk zap /dev/sdg /dev/sdh') 
-    local('ceph-deploy osd create --zap-disk %s:/dev/sdb' % (env.host))
+    run('/usr/sbin/ceph-disk zap /dev/sdg /dev/sdh') 
+    local('ceph-deploy osd create --zap-disk %s:/dev/sdb:/dev/sdg %s:/dev/sdc:/dev/sdg %s:/dev/sdd:/dev/sdg %s:/dev/sde:/dev/sdh %s:/dev/sdf:/dev/sdh' % (env.host,env.host,env.host,env.host,env.host))
 def prepareDisks():
     if diskprofile == "raid0":
-        run('umount /dev/sd{b,b1,c,c1,d,d1,e,e1,f,f1,g,g1,h,h1}')
-        run('umount /dev/sd{b,b1,c,c1,d,d1,e,e1,f,f1,g,g1,h,h1}')
+        run('umount /dev/sd{b,b1,c,c1,d,d1,e,e1,f,f1,g,g1}')
+        run('umount /dev/sd{b,b1,c,c1,d,d1,e,e1,f,f1,g,g1}')
     elif diskprofile == "noraid":
         run('yum install -y lvm2')
         run('umount /dev/sd{b,c,d,e,f,g,h,i,j,k,l,m}')
