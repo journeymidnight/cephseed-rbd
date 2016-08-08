@@ -35,7 +35,7 @@ git pull http://git.letv.cn/wuxingyi/cephseed-rbd.git
 
 ## 利用 Ceph-Seed 快速部署Ceph集群
 1. 配置到所有节点ssh登陆权限(即SSH白名单),如果没有配置到节点的服务器，那么需要在部署过程中手工输入节点的密码(如果服务器密码一致，只需输入一次).
-2. 参考conf/monhosts.example、conf/osdhosts.example的格式，创建conf/monhosts和conf/osdhosts, 填充需要部署的monitor hosts和osd hosts。 `注意：一行一个IP和一个hostname，文件尾部不要有空行`
+2. 参考conf/monhosts.example、conf/osdhosts.example的格式，创建conf/monhosts和conf/osdhosts, 填充需要部署的monitor hosts和osd hosts。 `注意：一行一个IP和一个hostname，文件尾部不要有空行,另外，部署monitor时，为了提高服务可用性，请将monitor放置到不同的机柜上`
 3. 执行：
 ```
 sh deploy.sh [-D|--diskprofile] [raid0|noraid] [-N|--no-purge]
